@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>广陵沐浴录 - 与孙策的每日打卡</title>
+    <style>
+        :root {
+            --bg: #fef7f0;
+            --card: #fff8f2;
+            --primary: #d4453a;
+            --primary-light: #f0c4b8;
+            --accent: #e89253;
+            --text: #4a3728;
+            --text-light: #8c6e5a;
+            --hair: #5b8fb9;
+            --shower: #5b9fb9;
+            --border: #f0d5c0;
+            --shadow: 0 4px 20px rgba(180, 120, 80, 0.12);
+            --radius: 20px;
+            --font-title: 'STKaiti', 'KaiTi', '楷体', 'Noto Serif SC', 'STSong', 'SimSun', '宋体', serif;
+            --font-body: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(240, 196, 184, 0.25) 0%, transparent 70%),
+                radial-gradient(ellipse at 90% 90%, rgba(232, 146, 83, 0.12) 0%, transparent 50%);
+            min-height: 100vh;
+            padding: 16px 16px max(env(safe-area-inset-bottom), 24px);
+            color: var(--text);
+            -webkit-user-select: none;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* ── 头部卡片 ── */
+        .header-card {
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(160deg, #fff6ed 0%, #fef2e8 100%);
+            border-radius: var(--radius);
+            padding: 20px 18px 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(240, 196, 184, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .avatar-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        .avatar-figure {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0c4b8 0%, #e89253 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            box-shadow: 0 4px 15px rgba(212, 69, 58, 0.25);
+            flex-shrink: 0;
+        }
+        .header-title {
+            font-family: var(--font-title);
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: bold;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+        .header-subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .header-quote {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            font-family: var(--font-title);
+            font-size: 15px;
+            color: var(--primary);
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.5px;
+            transition: all 0.4s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .header-quote .quote-icon {
+            font-size: 18px;
+            margin: 0 4px;
+            opacity: 0.6;
+        }
+
+        /* ── 统计卡片 ── */
+        .stats-row {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            gap: 10px;
+        }
+        .stat-card {
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px 10px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .stat-icon {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: var(--font-title);
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        .stat-card.hair .stat-number {
+            color: var(--hair);
+        }
+        .stat-card.shower .stat-number {
+            color: var(--shower);
+        }
+
+        /* ── 打卡按钮区 ── */
+        .action-row {
+            width: 100%;
+            max-width: 440px;
+            display: flex;
+            gap: 12px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 18px 12px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-body);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            letter-spacing: 0.5px;
+        }
+        .action-btn:active {
+            transform: scale(0.96);
+        }
+        .btn-hair {
+            background: #e8f4fc;
+            color: #3a6d8c;
+            border-color: #c8ddf0;
+        }
+        .btn-hair:active {
+            background: #d0e8f6;
+        }
+        .btn-shower {
+            background: #e8f6fc;
+            color: #3a6d8c;
+            border-color: #c8e4f0;
+        }
+        .btn-shower:active {
+            background: #d0ecf6;
+        }
+        .btn-icon {
+            font-size: 28px;
+        }
+        .btn-today-indicator {
+            font-size: 11px;
+            opacity: 0.75;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .btn-done-indicator {
+            font-size: 11px;
+            color: #4a8c4a;
+            background: rgba(74, 140, 74, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* ── 日历区 ── */
+        .calendar-card {
+            width: 100%;
+            max-width: 440px;
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 16px 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .calendar-title {
+            font-family: var(--font-title);
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text);
+        }
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .calendar-nav button {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--text);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .calendar-nav button:active {
+            background: #f5e8dc;
+        }
+        .weekday-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .date-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+            font-weight: 500;
+            min-width: 0;
+        }
+        .date-cell:active {
+            transform: scale(0.92);
+        }
+        .date-cell.today {
+            background: rgba(212, 69, 58, 0.08);
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .date-cell.empty {
+            pointer-events: none;
+        }
+        .date-cell .dot-row {
+            display: flex;
+            gap: 3px;
+            margin-top: 1px;
+        }
+        .date-cell .dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+        .dot.hair {
+            background: #5b8fb9;
+        }
+        .dot.shower {
+            background: #5b9fb9;
+        }
+        .legend-row {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--text-light);
+            justify-content: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ── 弹出提示 Toast ── */
+        .toast-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .toast-popup {
+            background: linear-gradient(135deg, #fff6ed, #fef2e8);
+            border: 2px solid var(--primary-light);
+            border-radius: 18px;
+            padding: 18px 22px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(180, 100, 60, 0.3);
+            animation: toastIn 0.35s ease, toastOut 0.35s ease 1.8s forwards;
+            max-width: 300px;
+            pointer-events: auto;
+        }
+        .toast-avatar {
+            font-size: 40px;
+            margin-bottom: 6px;
+        }
+        .toast-text {
+            font-family: var(--font-title);
+            font-size: 16px;
+            color: var(--primary);
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.85) translateY(-10px);
+            }
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 360px) {
+            .action-btn {
+                font-size: 14px;
+                padding: 14px 8px;
+            }
+            .stat-number {
+                font-size: 26px;
+            }
+            .date-cell {
+                font-size: 12px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 头部：孙策互动 -->
+    <div class="header-card">
+        <div class="avatar-row">
+            <div class="avatar-figure">🏹</div>
+            <div>
+                <div class="header-title">广陵沐浴录</div>
+                <div class="header-subtitle">与孙策的每日约定</div>
+            </div>
+        </div>
+        <div class="header-quote" id="headerQuote">
+            <span class="quote-icon">❝</span> 今天洗头了吗？让我闻闻香不香。<span class="quote-icon">❞</span>
+        </div>
+    </div>
+
+    <!-- 月度统计 -->
+    <div class="stats-row">
+        <div class="stat-card hair">
+            <div class="stat-icon">💇</div>
+            <div class="stat-number" id="hairCount">0</div>
+            <div class="stat-label">本月洗头</div>
+        </div>
+        <div class="stat-card shower">
+            <div class="stat-icon">🛀</div>
+            <div class="stat-number" id="showerCount">0</div>
+            <div class="stat-label">本月洗澡</div>
+        </div>
+    </div>
+
+    <!-- 打卡按钮 -->
+    <div class="action-row">
+        <button class="action-btn btn-hair" id="btnHair" onclick="checkIn('hair')">
+            <span class="btn-icon">💆‍♀️</span>
+            <span>洗头打卡</span>
+            <span class="btn-today-indicator" id="hairTodayIndicator"></span>
+        </button>
+        <button class="action-btn btn-shower" id="btnShower" onclick="checkIn('shower')">
+            <span class="btn-icon">🚿</span>
+            <span>洗澡打卡</span>
+            <span class="btn-today-indicator" id="showerTodayIndicator"></span>
+        </button>
+    </div>
+
+    <!-- 日历 -->
+    <div class="calendar-card">
+        <div class="calendar-header">
+            <span class="calendar-title" id="calendarTitle">2026年 4月</span>
+            <div class="calendar-nav">
+                <button onclick="prevMonth()" aria-label="上月">◀</button>
+                <button onclick="nextMonth()" aria-label="下月">▶</button>
+            </div>
+        </div>
+        <div class="weekday-row">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="date-grid" id="dateGrid"></div>
+        <div class="legend-row">
+            <div class="legend-item"><span class="legend-dot" style="background:#5b8fb9;"></span> 洗头</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#5b9fb9;"></span> 洗澡</div>
+        </div>
+    </div>
+
+    <!-- Toast区域 -->
+    <div class="toast-overlay" id="toastOverlay"></div>
+
+    <script>
+        // ==================== 数据管理 ====================
+        const STORAGE_KEY = 'sunce_wash_record';
+
+        function loadRecords() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveRecords(records) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        }
+
+        function getDateKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function todayKey() {
+            return getDateKey(new Date());
+        }
+
+        function hasRecord(dateKey, type) {
+            const records = loadRecords();
+            return records[dateKey] && records[dateKey][type];
+        }
+
+        function addRecord(dateKey, type) {
+            const records = loadRecords();
+            if (!records[dateKey]) records[dateKey] = {};
+            records[dateKey][type] = true;
+            saveRecords(records);
+        }
+
+        function removeRecord(dateKey, type) {
+            const records = loadRecords();
+            if (records[dateKey]) {
+                delete records[dateKey][type];
+                if (Object.keys(records[dateKey]).length === 0) {
+                    delete records[dateKey];
+                }
+                saveRecords(records);
+            }
+        }
+
+        // ==================== 孙策语录 ====================
+        // 基于孙策人设：小霸王、纯情、豪爽、讨厌下雨天、喜欢晒太阳
+        // 参考台词："我只皈依你"、"广陵小葱花"、"江东孙策"等
+        const sunceQuotes = {
+            // 洗头相关
+            hair: [
+                "洗了头？过来我闻闻……嗯，香香的，不愧是本小霸王看上的人！",
+                "头发好香！今日份的广陵王，依旧是江东最靓的风景线~",
+                "洗头了？真棒！让我想起第一次在江面艨艟上见你的模样……",
+                "这香味……比西王母庙前的海棠还醉人。干得漂亮！",
+                "洗发了吗？保持干净可是行军打仗的第一要务！——啊，不对，是恋爱的第一要务。",
+                "江东孙策奉劝你：常洗头，好运来。你看我，每天晒太阳，头发都闪着光呢！",
+                "好闻！你是不是偷偷用了我的洗发水？……没有？那更好了，这是你独有的味道。",
+                "又洗头了？你这勤快劲儿，比江东水师的旗语还利索！",
+            ],
+            // 洗澡相关
+            shower: [
+                "沐浴了？……咳咳，我什么都没想！只是觉得你很爱干净……很好！",
+                "洗澡打卡成功！本王宣布，你是全广陵最清爽的存在！",
+                "洗得干干净净的，像雨后的海棠花瓣……什么神仙来了都不换。",
+                "今日沐浴打卡——记就记，刻吴越界碑上，让天下人都看见你有多自律！",
+                "洗澡了？好！本霸王最讨厌脏兮兮的家伙，你果然不一样。",
+                "什么神仙来了，江东孙策都不皈依，我只皈依……咳咳，你洗完澡的样子。",
+                "沐浴更新！若你为江东乔木，我便是长江之水，绕你身侧。……这水，够清澈吧？",
+                "又洗澡了？这自律程度，比我练兵还强！要不要来我帐下当个……当个王妃？",
+            ],
+            // 双打卡
+            both: [
+                "洗头又洗澡？！你今天简直是全江东最闪亮的人！我眼睛都要被你晃到了！",
+                "双重打卡！广陵小葱花，你今天香喷喷得不像话……过来，让我仔细看看。",
+                "又洗头又沐浴，你这是要去见西王母吗？——不过，见我就够了。",
+                "两头都顾到，不愧是我孙策的人！谁敢说没名没份，你可是广陵王妃！",
+                "洗头加洗澡，今天是什么大日子？……不管了，奖励你一个来自小霸王的拥抱！",
+            ],
+            // 连续打卡
+            streak: [
+                "连续{0}天不落！你比江东水师的旗语还准时！孙策我甘拜下风！",
+                "第{0}天连续打卡？厉害了！老子行军都没你这么有纪律！",
+                "连续{0}天了！这坚持的劲头，比我收复江东残部还猛！",
+                "{0}天打卡不断！怎么办，我好像越来越离不开你了……",
+            ],
+            // 好久没打卡
+            remind: [
+                "好久没看到你打卡了……是不是又在下雨天偷懒？别学我讨厌下雨就不洗澡啊！",
+                "几天不见动静……难道你也像我一样躲雨天？快打起精神来！",
+                "喂喂，怎么不打卡了？就算是江东猛虎也要定期洗澡的好吗！",
+                "你懈怠了！是不是需要本霸王亲自上门督促？我可说得出做得到！",
+            ],
+            // 雨天特别
+            rainy: [
+                "下雨天还坚持打卡？我讨厌下雨，但我喜欢你这份认真。",
+                "外面下雨了……但你的自律比晴天还耀眼。了不起。",
+                "雨天打卡，真是勇士！孙策最讨厌下雨，但你让我对雨天有了新的看法。",
+            ],
+            // 月初
+            monthStart: [
+                "新的一个月开始了！这个月也要好好洗头洗澡，做最闪亮的广陵王！",
+                "月初了！让我们重新出发，就像当年渡江横扫江东一样，横扫所有邋遢！",
+            ],
+            // 默认
+            idle: [
+                "今天洗头了吗？让我闻闻香不香。",
+                "江东小霸王提醒您：保持清洁，随时准备惊艳全场！",
+                "我可是每天晒太阳都浑身清爽，你可不能输给我！",
+                "什么神仙来了，江东孙策都不皈依……我只关心你今天洗了没。",
+                "奴家是……广陵小葱花哦！你呢，今天洗头了吗？",
+                "记得打卡哟！不然我要派江东艨艟去撞你的门了！",
+            ],
+        };
+
+        function getRandomQuote(category) {
+            const pool = sunceQuotes[category] || sunceQuotes.idle;
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        // 天数填充
+        function fillQuote(quote, days) {
+            return quote.replace('{0}', days);
+        }
+
+        function updateHeaderQuote(category) {
+            const quoteEl = document.getElementById('headerQuote');
+            const quote = getRandomQuote(category);
+            quoteEl.innerHTML = `<span class="quote-icon">❝</span> ${quote} <span class="quote-icon">❞</span>`;
+        }
+
+        // ==================== 打卡逻辑 ====================
+        function checkIn(type) {
+            const today = todayKey();
+            const alreadyDone = hasRecord(today, type);
+
+            if (alreadyDone) {
+                // 取消打卡
+                removeRecord(today, type);
+                showToast(type, true);
+                // 更新语录
+                const otherType = type === 'hair' ? 'shower' : 'hair';
+                const otherDone = hasRecord(today, otherType);
+                if (!otherDone) {
+                    updateHeaderQuote('idle');
+                } else {
+                    updateHeaderQuote(otherType);
+                }
+            } else {
+                // 新增打卡
+                addRecord(today, type);
+                showToast(type, false);
+                // 判断是否双打卡
+                const otherType = type === 'hair' ? 'shower' : 'hair';
+                const otherDone = hasRecord(today, otherType);
+                if (otherDone) {
+                    updateHeaderQuote('both');
+                } else {
+                    updateHeaderQuote(type);
+                }
+                // 检查连续天数
+                checkStreak();
+            }
+
+            renderCalendar();
+            updateStats();
+            updateTodayIndicators();
+        }
+
+        function checkStreak() {
+            const records = loadRecords();
+            let streak = 0;
+            const today = new Date();
+            const checkDate = new Date(today);
+
+            while (true) {
+                const key = getDateKey(checkDate);
+                if (records[key] && (records[key].hair || records[key].shower)) {
+                    streak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+
+            if (streak >= 3) {
+                const quote = fillQuote(getRandomQuote('streak'), streak);
+                const quoteEl = document.getElementById('headerQuote');
+                quoteEl.innerHTML = `<span class="quote-icon">❝</span> ${quote} <span class="quote-icon">❞</span>`;
+            }
+        }
+
+        // ==================== Toast 弹窗 ====================
+        function showToast(type, isCancel) {
+            const overlay = document.getElementById('toastOverlay');
+
+            let avatar, text;
+            if (isCancel) {
+                avatar = '😿';
+                const quotes = [
+                    '取消了打卡……好吧，那下次补上！本霸王很好说话的。',
+                    '打卡已撤销。没关系，明天再来，江东的门永远为你敞开。',
+                    '取消了？……哼，下次可不许这样！（偷偷抹眼泪）',
+                ];
+                text = quotes[Math.floor(Math.random() * quotes.length)];
+            } else {
+                avatar = '❤️‍🔥';
+                const pool = type === 'hair' ? sunceQuotes.hair : sunceQuotes.shower;
+                text = pool[Math.floor(Math.random() * pool.length)];
+            }
+
+            // 检查雨天
+            // （使用简单的天气判断 - 这里作为彩蛋，随机给雨天文案）
+            if (!isCancel && Math.random() < 0.15) {
+                text = getRandomQuote('rainy');
+            }
+
+            overlay.innerHTML = `
+                <div class="toast-popup">
+                    <div class="toast-avatar">${avatar}</div>
+                    <div class="toast-text">${text}</div>
+                </div>
+            `;
+
+            // 2.5秒后清除
+            setTimeout(() => {
+                overlay.innerHTML = '';
+            }, 2500);
+        }
+
+        // ==================== 按钮状态 ====================
+        function updateTodayIndicators() {
+            const today = todayKey();
+            const hairDone = hasRecord(today, 'hair');
+            const showerDone = hasRecord(today, 'shower');
+
+            const hairIndicator = document.getElementById('hairTodayIndicator');
+            const showerIndicator = document.getElementById('showerTodayIndicator');
+
+            if (hairDone) {
+                hairIndicator.textContent = '✅ 已打卡';
+                hairIndicator.className = 'btn-done-indicator';
+            } else {
+                hairIndicator.textContent = '点击打卡';
+                hairIndicator.className = 'btn-today-indicator';
+            }
+
+            if (showerDone) {
+                showerIndicator.textContent = '✅ 已打卡';
+                showerIndicator.className = 'btn-done-indicator';
+            } else {
+                showerIndicator.textContent = '点击打卡';
+                showerIndicator.className = 'btn-today-indicator';
+            }
+        }
+
+        // ==================== 统计更新 ====================
+        function updateStats() {
+            const records = loadRecords();
+            const now = new Date();
+            const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            let hairCount = 0;
+            let showerCount = 0;
+
+            for (const [key, val] of Object.entries(records)) {
+                if (key.startsWith(yearMonth)) {
+                    if (val.hair) hairCount++;
+                    if (val.shower) showerCount++;
+                }
+            }
+
+            document.getElementById('hairCount').textContent = hairCount;
+            document.getElementById('showerCount').textContent = showerCount;
+        }
+
+        // ==================== 日历渲染 ====================
+        let calendarYear, calendarMonth;
+
+        function renderCalendar() {
+            const year = calendarYear;
+            const month = calendarMonth;
+
+            document.getElementById('calendarTitle').textContent = `${year}年 ${month + 1}月`;
+
+            const dateGrid = document.getElementById('dateGrid');
+            const records = loadRecords();
+            const today = new Date();
+            const todayStr = getDateKey(today);
+
+            // 当月第一天和最后一天
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDayOfWeek = firstDay.getDay(); // 0=周日
+
+            let html = '';
+
+            // 填充前置空白
+            for (let i = 0; i < startDayOfWeek; i++) {
+                html += '<div class="date-cell empty"></div>';
+            }
+
+            // 填充日期
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const date = new Date(year, month, d);
+                const dateKey = getDateKey(date);
+                const isToday = dateKey === todayStr;
+                const record = records[dateKey] || {};
+                const hasHair = !!record.hair;
+                const hasShower = !!record.shower;
+
+                let dotHtml = '';
+                if (hasHair || hasShower) {
+                    dotHtml = '<div class="dot-row">';
+                    if (hasHair) dotHtml += '<span class="dot hair"></span>';
+                    if (hasShower) dotHtml += '<span class="dot shower"></span>';
+                    dotHtml += '</div>';
+                }
+
+                const todayClass = isToday ? ' today' : '';
+
+                html += `
+                    <div class="date-cell${todayClass}" onclick="onDateClick('${dateKey}')">
+                        <span>${d}</span>
+                        ${dotHtml}
+                    </div>
+                `;
+            }
+
+            dateGrid.innerHTML = html;
+        }
+
+        function onDateClick(dateKey) {
+            const records = loadRecords();
+            const record = records[dateKey] || {};
+            const hasHair = !!record.hair;
+            const hasShower = !!record.shower;
+
+            if (!hasHair && !hasShower) return;
+
+            let msg = `📅 ${dateKey}\n`;
+            if (hasHair) msg += '💇 已洗头\n';
+            if (hasShower) msg += '🛀 已洗澡\n';
+            msg += '\n点击确认可清除当日记录';
+
+            if (confirm(msg + '\n要清除这天的记录吗？')) {
+                delete records[dateKey];
+                saveRecords(records);
+                renderCalendar();
+                updateStats();
+                updateTodayIndicators();
+                updateHeaderQuote('idle');
+            }
+        }
+
+        function prevMonth() {
+            calendarMonth--;
+            if (calendarMonth < 0) {
+                calendarMonth = 11;
+                calendarYear--;
+            }
+            renderCalendar();
+            updateStats();
+        }
+
+        function nextMonth() {
+            calendarMonth++;
+            if (calendarMonth > 11) {
+                calendarMonth = 0;
+                calendarYear++;
+            }
+            renderCalendar();
+            updateStats();
+        }
+
+        // ==================== 初始化 ====================
+        function init() {
+            const now = new Date();
+            calendarYear = now.getFullYear();
+            calendarMonth = now.getMonth();
+
+            renderCalendar();
+            updateStats();
+            updateTodayIndicators();
+
+            // 根据今日状态设置初始语录
+            const today = todayKey();
+            const hairDone = hasRecord(today, 'hair');
+            const showerDone = hasRecord(today, 'shower');
+
+            if (hairDone && showerDone) {
+                updateHeaderQuote('both');
+            } else if (hairDone) {
+                updateHeaderQuote('hair');
+            } else if (showerDone) {
+                updateHeaderQuote('shower');
+            } else {
+                // 检查是否好久没打卡（超过3天）
+                const records = loadRecords();
+                let lastDate = null;
+                for (const key of Object.keys(records).sort().reverse()) {
+                    if (records[key] && (records[key].hair || records[key].shower)) {
+                        lastDate = key;
+                        break;
+                    }
+                }
+                if (lastDate) {
+                    const last = new Date(lastDate);
+                    const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+                    if (diffDays >= 3) {
+                        updateHeaderQuote('remind');
+                        return;
+                    }
+                }
+                // 月初
+                if (now.getDate() <= 3) {
+                    updateHeaderQuote('monthStart');
+                } else {
+                    updateHeaderQuote('idle');
+                }
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
